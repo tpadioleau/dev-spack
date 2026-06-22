@@ -1,0 +1,45 @@
+---
+name: Build Spack env
+
+# yamllint disable-line rule:truthy
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test-macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - dev-benchmark-euler-kernels.yaml
+          - dev-ddc.yaml
+        os: [ubuntu-26.04]
+    runs-on: ${{matrix.os}}
+    permissions:
+      packages: write  # Required to push to registry
+    steps:
+      - name: Checkout built branch
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+      - name: Set up Spack
+        uses: spack/setup-spack@16b756799ede8b28951287f89bcd3fdb32ec1ca3  # v3.0.0
+        with:
+          spack_ref: v1.2.0
+          buildcache: true
+      - name: Install
+        shell: spack-bash {0}
+        run: |
+          spack env create . ${{matrix.env}}
+          spack --env . repo update
+          spack --env . install
+      - name: Push packages and update index
+        shell: spack-bash {0}
+        env:
+          GITHUB_USER: ${{github.actor}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: spack --env . buildcache push --update-index local-buildcache
+        if: ${{!cancelled()}}
