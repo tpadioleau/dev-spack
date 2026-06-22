@@ -1,0 +1,73 @@
+---
+spack:
+  concretizer:
+    reuse: false
+    unify: true
+  config:
+    install_tree:
+      padded_length: 128
+  mirrors:
+    local-buildcache:
+      url: oci://ghcr.io/tpadioleau/dev-spack-ubuntu-26.04
+      binary: true
+      signed: false
+      access_pair:
+        id_variable: GITHUB_USER
+        secret_variable: GITHUB_TOKEN
+  packages:
+    all:
+      require:
+        - 'target=x86_64'
+      prefer:
+        - '~cuda'
+        - '~rocm'
+        - '~openmp'
+        - '~mpi'
+        - '~fortran'
+    c:
+      require: 'gcc@15'
+    cxx:
+      require: 'gcc@15'
+    fortran:
+      require: 'gcc@15'
+    lapack:
+      require: 'openblas@0.3'
+    mpi:
+      require: 'openmpi@5.0'
+    py-dask:
+      prefer:
+        - '~dataframe'
+    py-pandas:
+      prefer: 
+        - '~performance'
+  repos:
+    builtin:
+      tag: v2026.06.0
+  specs:
+    - 'gcc@15'
+    - 'cmake@4.2'
+    - 'ddc@0.14 +fft +pdi +splines'
+    - 'ginkgo@1.11'
+    - 'googletest@1.17 +gmock'
+    - 'kokkos@5.1'
+    - 'kokkos-kernels@5.1'
+    - 'kokkos-tools@git.3d33d0a783c5321d6981b3b4e43d3c157d2ca887=develop'
+    - 'koliop@0.2'
+    - 'lapack'
+    - 'mpi'
+    - 'ninja@1.13'
+    - 'paraconf@1.0'
+    - 'pkgconfig'
+    - 'pdi@1.11'
+    - 'pdiplugin-decl-hdf5@1.11'
+    - 'pdiplugin-mpi@1.11'
+    - 'pdiplugin-set-value@1.11'
+    - 'pdiplugin-trace@1.11'
+    - 'py-dask'
+    - 'py-h5py'
+    - 'py-imageio'
+    - 'py-matplotlib'
+    - 'py-numpy'
+    - 'py-pyyaml'
+    - 'py-scipy'
+    - 'py-xarray'

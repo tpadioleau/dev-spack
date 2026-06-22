@@ -18,6 +18,7 @@ jobs:
         env:
           - dev-benchmark-euler-kernels.yaml
           - dev-ddc.yaml
+          - dev-gyselalibxx.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:
