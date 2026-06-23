@@ -6,6 +6,11 @@ spack:
   config:
     install_tree:
       padded_length: 128
+    sandbox:
+      enable: true
+      allow_network: false
+      allow_read:
+        - /
   mirrors:
     local-buildcache:
       url: oci://ghcr.io/tpadioleau/dev-spack-ubuntu-26.04
@@ -52,8 +57,8 @@ spack:
     - 'pdiplugin-mpi@1.11'
     - 'pdiplugin-set-value@1.11'
     - 'pdiplugin-trace@1.11'
-    - 'py-h5py'
-    - 'py-matplotlib'
-    - 'py-numpy'
-    - 'py-pyyaml'
+    - 'py-h5py@3.16'
+    - 'py-matplotlib@3.11 ^freetype@2.14.1'
+    - 'py-numpy@2.4'
+    - 'py-pyyaml@6.0'
     - 'py-scipy'

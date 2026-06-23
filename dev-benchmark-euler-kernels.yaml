@@ -6,6 +6,11 @@ spack:
   config:
     install_tree:
       padded_length: 128
+    sandbox:
+      enable: true
+      allow_network: false
+      allow_read:
+        - /
   mirrors:
     local-buildcache:
       url: oci://ghcr.io/tpadioleau/dev-spack-ubuntu-26.04
