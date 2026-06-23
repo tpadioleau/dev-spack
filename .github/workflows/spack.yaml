@@ -11,7 +11,7 @@ permissions:
   contents: read
 
 jobs:
-  test-macos:
+  build-spack-env:
     strategy:
       fail-fast: false
       matrix:
@@ -19,6 +19,8 @@ jobs:
           - dev-benchmark-euler-kernels.yaml
           - dev-ddc.yaml
           - dev-gyselalibxx.yaml
+          - dev-heraclespp.yaml
+          - dev-kokkos-fft.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:

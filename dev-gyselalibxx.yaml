@@ -25,11 +25,11 @@ spack:
         - '~mpi'
         - '~fortran'
     c:
-      require: 'gcc@15'
+      require: 'gcc@15.2'
     cxx:
-      require: 'gcc@15'
+      require: 'gcc@15.2'
     fortran:
-      require: 'gcc@15'
+      require: 'gcc@15.2'
     lapack:
       require: 'openblas@0.3'
     mpi:
@@ -44,7 +44,7 @@ spack:
     builtin:
       tag: v2026.06.0
   specs:
-    - 'gcc@15'
+    - 'gcc@15.2'
     - 'cmake@4.2'
     - 'ddc@0.14 +fft +pdi +splines'
     - 'ginkgo@1.11'

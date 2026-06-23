@@ -25,16 +25,16 @@ spack:
         - '~mpi'
         - '~fortran'
     c:
-      require: 'gcc@15'
+      require: 'gcc@15.2'
     cxx:
-      require: 'gcc@15'
+      require: 'gcc@15.2'
     fortran:
-      require: 'gcc@15'
+      require: 'gcc@15.2'
   repos:
     builtin:
       tag: v2026.06.0
   specs:
-    - 'gcc@15'
+    - 'gcc@15.2'
     - 'benchmark@1.9 ~performance_counters'
     - 'cmake@4.2'
     - 'googletest@1.17 +gmock'

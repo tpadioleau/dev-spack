@@ -30,8 +30,6 @@ spack:
       require: 'gcc@15.2'
     fortran:
       require: 'gcc@15.2'
-    lapack:
-      require: 'openblas@0.3'
   repos:
     builtin:
       tag: v2026.06.0
@@ -40,19 +38,8 @@ spack:
     - 'benchmark@1.9 ~performance_counters'
     - 'cmake@4.2'
     - 'doxygen@1.17'
-    - 'ginkgo@1.11'
+    - 'fftw@3.3 precision=float,double'
     - 'googletest@1.17 +gmock'
     - 'kokkos@5.1'
-    - 'kokkos-fft@1.1 host_backend=fftw-serial'
-    - 'kokkos-kernels@5.1'
-    - 'lapack'
     - 'ninja@1.13'
-    - 'paraconf@1.0'
-    - 'pkgconfig'
-    - 'pdi@1.11'
-    - 'pdiplugin-decl-hdf5@1.11'
-    - 'pdiplugin-user-code@1.11'
-    - 'pdiplugin-trace@1.11'
     - 'py-gcovr@8.6'
-    - 'py-numpy@2.4'
-    - 'py-pytest@9.0'
