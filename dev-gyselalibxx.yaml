@@ -37,10 +37,6 @@ spack:
       require: 'gcc@15.2'
     fortran:
       require: 'gcc@15.2'
-    lapack:
-      require: 'openblas@0.3'
-    mpi:
-      require: 'openmpi@5.0'
     py-dask:
       prefer:
         - '~dataframe'
@@ -48,21 +44,25 @@ spack:
       prefer: 
         - '~performance'
   repos:
+    patches:
+      git: https://github.com/gyselax/spack.git
+      branch: releases/v2026.06
     builtin:
       tag: v2026.06.0
   specs:
     - 'gcc@15.2'
     - 'cmake@4.2'
-    - 'ddc@0.14 +fft +pdi +splines'
+    - 'ddc@0.15 +fft +pdi +splines'
     - 'ginkgo@1.11'
+    - 'gmgpolar@2.3'
     - 'googletest@1.17 +gmock'
     - 'kokkos@5.1'
     - 'kokkos-kernels@5.1'
     - 'kokkos-tools@git.3d33d0a783c5321d6981b3b4e43d3c157d2ca887=develop'
     - 'koliop@0.2'
-    - 'lapack'
-    - 'mpi'
     - 'ninja@1.13'
+    - 'openblas@0.3'
+    - 'openmpi@5.0'
     - 'paraconf@1.0'
     - 'pkgconfig'
     - 'pdi@1.11'
