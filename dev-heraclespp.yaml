@@ -11,6 +11,8 @@ spack:
       allow_network: false
       allow_read:
         - /
+      allow_write:
+        - /home/runner
   mirrors:
     local-buildcache:
       url: oci://ghcr.io/tpadioleau/dev-spack-ubuntu-26.04
