@@ -24,6 +24,7 @@ spack:
       require:
         - 'target=x86_64'
       prefer:
+        - '+tests'
         - '~cuda'
         - '~rocm'
         - '~openmp'
@@ -39,22 +40,6 @@ spack:
     builtin:
       branch: releases/v2026.06
   specs:
-    - 'gcc@15.2'
-    - 'benchmark@1.9 ~performance_counters'
-    - 'cmake@4.2'
-    - 'doxygen@1.17'
-    - 'ginkgo@1.11'
-    - 'googletest@1.17 +gmock'
+    - 'ddc@0.15 ~fft ~pdi ~splines'
     - 'kokkos@5.1'
-    - 'kokkos-fft@1.1 host_backend=fftw-serial'
-    - 'kokkos-kernels@5.1'
-    - 'ninja@1.13'
-    - 'openblas@0.3'
-    - 'paraconf@1.0'
-    - 'pdi@1.11'
-    - 'pdiplugin-decl-hdf5@1.11'
-    - 'pdiplugin-user-code@1.11'
-    - 'pdiplugin-trace@1.11'
-    - 'py-gcovr@8.6'
-    - 'py-numpy@2.4'
-    - 'py-pytest@9.0'
+    - 'kokkos-fft@1.1'

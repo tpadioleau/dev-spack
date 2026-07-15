@@ -3,6 +3,7 @@ name: Build Spack env
 
 # yamllint disable-line rule:truthy
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -16,11 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - dev-benchmark-euler-kernels.yaml
           - dev-ddc.yaml
-          - dev-gyselalibxx.yaml
-          - dev-heraclespp.yaml
-          - dev-kokkos-fft.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:
@@ -35,14 +32,13 @@ jobs:
           buildcache: true
       - name: Install
         shell: spack-bash {0}
-        run: |
-          spack env create . ${{matrix.env}}
-          spack --env . repo update
-          spack --env . install
-      - name: Push packages and update index
-        shell: spack-bash {0}
         env:
           GITHUB_USER: ${{github.actor}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: spack --env . buildcache push --fail-fast --update-index --without-build-dependencies  local-buildcache
-        if: ${{!cancelled()}}
+        run: |
+          spack env create . ${{matrix.env}}
+          spack --env . repo update
+          spack --env . buildcache update-index local-buildcache
+          spack --env . concretize --test root --quiet
+          spack --env . spec --install-status --namespaces
+          spack --env . install --test root --use-buildcache package:never,dependencies:auto
