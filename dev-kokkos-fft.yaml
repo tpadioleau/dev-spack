@@ -37,7 +37,7 @@ spack:
       require: 'gcc@15.2'
   repos:
     builtin:
-      tag: v2026.06.0
+      branch: releases/v2026.06
   specs:
     - 'gcc@15.2'
     - 'benchmark@1.9 ~performance_counters'

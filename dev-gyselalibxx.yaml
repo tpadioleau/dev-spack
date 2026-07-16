@@ -48,7 +48,7 @@ spack:
       git: https://github.com/gyselax/spack.git
       branch: releases/v2026.06
     builtin:
-      tag: v2026.06.0
+      branch: releases/v2026.06
   specs:
     - 'gcc@15.2'
     - 'cmake@4.2'
