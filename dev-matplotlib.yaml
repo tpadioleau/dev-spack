@@ -7,10 +7,12 @@ spack:
     install_tree:
       padded_length: 128
     sandbox:
-      enable: true
+      enable: false
       allow_network: false
       allow_read:
         - /
+      allow_write:
+        - /home/runner
   mirrors:
     local-buildcache:
       url: oci://ghcr.io/tpadioleau/dev-spack-ubuntu-26.04
@@ -24,7 +26,6 @@ spack:
       require:
         - 'target=x86_64'
       prefer:
-        - '+tests'
         - '~cuda'
         - '~rocm'
         - '~openmp'
@@ -36,10 +37,14 @@ spack:
       require: 'gcc@15.2'
     fortran:
       require: 'gcc@15.2'
+    py-dask:
+      prefer:
+        - '~dataframe'
+    py-pandas:
+      prefer: 
+        - '~performance'
   repos:
     builtin:
       branch: releases/v2026.06
   specs:
-    - 'ddc@0.15 ~fft ~pdi ~splines'
-    - 'kokkos@5.1'
-    - 'kokkos-fft@1.1'
+    - 'py-matplotlib@3.11'
