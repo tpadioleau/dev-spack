@@ -3,6 +3,7 @@ name: Build Spack env
 
 # yamllint disable-line rule:truthy
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -12,16 +13,12 @@ permissions:
   contents: read
 
 jobs:
-  build-spack-env:
+  build-kokkos-env:
     strategy:
       fail-fast: false
       matrix:
         env:
-          - dev-benchmark-euler-kernels.yaml
-          - dev-ddc.yaml
-          - dev-gyselalibxx.yaml
-          - dev-heraclespp.yaml
-          - dev-kokkos-fft.yaml
+          - dev-kokkos.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:
@@ -36,6 +33,9 @@ jobs:
           buildcache: true
       - name: Install
         shell: spack-bash {0}
+        env:
+          GITHUB_USER: ${{github.actor}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
           spack env create . ${{matrix.env}}
           spack --env . repo update
@@ -45,5 +45,34 @@ jobs:
         env:
           GITHUB_USER: ${{github.actor}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: spack --env . buildcache push --fail-fast --update-index --without-build-dependencies  local-buildcache
+        run: spack --env . buildcache push --fail-fast --update-index --allow-missing local-buildcache
         if: ${{!cancelled()}}
+  build-ddc-env:
+    strategy:
+      fail-fast: false
+      matrix:
+        env:
+          - dev-ddc.yaml
+        os: [ubuntu-26.04]
+    runs-on: ${{matrix.os}}
+    permissions:
+      packages: write  # Required to push to registry
+    needs: build-kokkos-env
+    steps:
+      - name: Checkout built branch
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+      - name: Set up Spack
+        uses: spack/setup-spack@16b756799ede8b28951287f89bcd3fdb32ec1ca3  # v3.0.0
+        with:
+          spack_ref: v1.2.1
+          buildcache: true
+      - name: Install
+        shell: spack-bash {0}
+        env:
+          GITHUB_USER: ${{github.actor}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: |
+          spack env create . ${{matrix.env}}
+          spack --env . repo update
+          spack --env . buildcache update-index local-buildcache
+          spack --env . install --use-buildcache package:never,dependencies:auto

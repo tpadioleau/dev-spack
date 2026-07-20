@@ -39,4 +39,4 @@ spack:
     builtin:
       branch: releases/v2026.06
   specs:
-    - 'ddc@0.15 ~fft ~pdi ~splines'
+    - 'kokkos@5.1.1~aggressive_vectorization~cmake_lang+complex_align~cuda~debug~debug_bounds_check+deprecated_code~hip_relocatable_device_code~hpx~hwloc~ipo~openmp~pic~rocm+serial+shared~sycl~tests~threads~tuning~wrapper build_system=cmake build_type=Release cxxstd=20 generator=make intel_gpu_arch=none'
