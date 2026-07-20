@@ -58,3 +58,8 @@ spack:
     - 'py-gcovr@8.6'
     - 'py-numpy@2.4'
     - 'py-pytest@9.0'
+  view:
+    default:
+      projections:
+        all: "{name}-{version}-{hash}"
+      root: .spack-env/view
