@@ -39,4 +39,4 @@ spack:
     builtin:
       branch: releases/v2026.06
   specs:
-    - 'kokkos-kernels@5.1'
+    - 'kokkos@5.1'
