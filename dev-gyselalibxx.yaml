@@ -77,3 +77,8 @@ spack:
     - 'py-pyyaml@6.0'
     - 'py-scipy@1.17'
     - 'py-xarray@2026.4'
+  view:
+    default:
+      projections:
+        all: "{name}-{version}-{hash}"
+      root: .spack-env/view

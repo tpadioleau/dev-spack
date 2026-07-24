@@ -46,3 +46,8 @@ spack:
     - 'kokkos@5.1'
     - 'ninja@1.13'
     - 'py-gcovr@8.6'
+  view:
+    default:
+      projections:
+        all: "{name}-{version}-{hash}"
+      root: .spack-env/view

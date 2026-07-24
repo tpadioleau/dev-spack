@@ -62,3 +62,8 @@ spack:
     - 'py-numpy@2.4'
     - 'py-pyyaml@6.0'
     - 'py-scipy'
+  view:
+    default:
+      projections:
+        all: "{name}-{version}-{hash}"
+      root: .spack-env/view

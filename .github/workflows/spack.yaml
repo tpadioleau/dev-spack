@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -26,7 +27,7 @@ jobs:
       - name: Set up Spack
         uses: spack/setup-spack@16b756799ede8b28951287f89bcd3fdb32ec1ca3  # v3.0.0
         with:
-          spack_ref: v1.2.1
+          spack_ref: v1.2.2
           buildcache: true
       - name: Install
         shell: spack-bash {0}
@@ -34,5 +35,5 @@ jobs:
           GITHUB_USER: ${{github.actor}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
-          spack install --fresh kokkos
-          spack install --fresh kokkos-kernels
+          spack install --fresh kokkos+pic ^cmake target=x86_64_v3
+          spack install --fresh kokkos-kernels ^cmake target=x86_64_v3
