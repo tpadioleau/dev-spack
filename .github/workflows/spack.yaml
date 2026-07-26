@@ -40,6 +40,7 @@ jobs:
         shell: spack-bash {0}
         run: |
           spack env create . ${{matrix.env}}
+          spack --env . config add config:install_tree:padded_length:128
           spack --env . repo update
           spack --env . install
       - name: Push packages and update index

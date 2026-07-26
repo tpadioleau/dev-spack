@@ -4,8 +4,6 @@ spack:
     reuse: false
     unify: true
   config:
-    install_tree:
-      padded_length: 128
     sandbox:
       enable: true
       allow_network: false
