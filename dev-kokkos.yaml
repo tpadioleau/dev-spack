@@ -1,0 +1,49 @@
+---
+spack:
+  concretizer:
+    reuse: false
+    unify: true
+  config:
+    install_tree:
+      padded_length: 128
+    sandbox:
+      enable: true
+      allow_network: false
+      allow_read:
+        - /
+  mirrors:
+    local-buildcache:
+      url: oci://ghcr.io/tpadioleau/dev-spack-ubuntu-26.04
+      binary: true
+      signed: false
+      access_pair:
+        id_variable: GITHUB_USER
+        secret_variable: GITHUB_TOKEN
+  packages:
+    all:
+      require:
+        - 'target=x86_64'
+      prefer:
+        - '~cuda'
+        - '~rocm'
+        - '~openmp'
+        - '~mpi'
+        - '~fortran'
+    c:
+      require: 'gcc@15.2'
+    cxx:
+      require: 'gcc@15.2'
+    fortran:
+      require: 'gcc@15.2'
+  repos:
+    builtin:
+      branch: releases/v2026.06
+  specs:
+    - 'gcc@15.2'
+    - 'cmake@4.2'
+    - 'googletest@1.17 +gmock'
+  view:
+    default:
+      projections:
+        all: "{name}-{version}-{hash}"
+      root: .spack-env/view

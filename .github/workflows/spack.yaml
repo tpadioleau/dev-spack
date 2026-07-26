@@ -22,6 +22,7 @@ jobs:
           - dev-gmgpolar.yaml
           - dev-gyselalibxx.yaml
           - dev-heraclespp.yaml
+          - dev-kokkos.yaml
           - dev-kokkos-fft.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
