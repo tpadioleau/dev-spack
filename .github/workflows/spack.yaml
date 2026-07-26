@@ -19,6 +19,7 @@ jobs:
         env:
           - dev-benchmark-euler-kernels.yaml
           - dev-ddc.yaml
+          - dev-gmgpolar.yaml
           - dev-gyselalibxx.yaml
           - dev-heraclespp.yaml
           - dev-kokkos-fft.yaml
