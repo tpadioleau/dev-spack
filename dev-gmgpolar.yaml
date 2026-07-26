@@ -34,9 +34,6 @@ spack:
     fortran:
       require: 'gcc@15.2'
   repos:
-    patches:
-      git: https://github.com/gyselax/spack.git
-      branch: releases/v2026.06
     builtin:
       branch: releases/v2026.06
   specs:
