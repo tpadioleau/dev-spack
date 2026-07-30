@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -17,17 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - dev-benchmark-euler-kernels.yaml
-          - dev-ddc.yaml
-          - dev-gmgpolar.yaml
-          - dev-gyselalibxx.yaml
-          - dev-gyselaxpp.yaml
-          - dev-heraclespp.yaml
-          - dev-kokkos.yaml
-          - dev-kokkos-comm.yaml
-          - dev-kokkos-fft.yaml
-          - dev-mini-app-io.yaml
-          - dev-mini-app-poisson.yaml
+          - gyselalibxx.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:
@@ -56,11 +47,14 @@ jobs:
           spack --env . concretize
           mkdir tmp_spack
           export TMPDIR=$PWD/tmp_spack
-          spack --env . install --fail-fast --include-build-deps --show-log-on-error
-      - name: Push packages and update index
-        shell: spack-bash {0}
-        env:
-          GITHUB_USER: ${{github.actor}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: spack --env . buildcache push --fail-fast --update-index local-buildcache
-        if: ${{!cancelled()}}
+          spack --env . install --test root --include-build-deps --show-log-on-error
+      # - name: Push packages and update index
+      #   shell: spack-bash {0}
+      #   env:
+      #     GITHUB_USER: ${{github.actor}}
+      #     GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+      #   run: spack --env . buildcache push --fail-fast --update-index local-buildcache
+      #   if: ${{!cancelled()}}
+      - name: Setup tmate session
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
