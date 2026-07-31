@@ -45,6 +45,9 @@ spack:
     freetype:
       prefer:
         - '@2.14.1'
+    openmpi:
+      prefer:
+        - '+openshmem'
   repos:
     patches:
       git: https://github.com/gyselax/spack.git
