@@ -42,9 +42,8 @@ jobs:
           spack env create . ${{matrix.env}}
           spack --env . config add config:install_tree:padded_length:128
           spack --env . repo update
-          spack --env . buildcache list --allarch
           spack --env . concretize
-          spack --env . install --include-build-deps
+          spack --env . install --include-build-deps --show-log-on-error
       - name: Push packages and update index
         shell: spack-bash {0}
         env:
