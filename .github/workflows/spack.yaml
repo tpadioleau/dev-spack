@@ -36,12 +36,17 @@ jobs:
         with:
           spack_ref: v1.2.2
           buildcache: true
-      - name: Install
+      - name: Prepare environment
         shell: spack-bash {0}
         run: |
+          spack bootstrap now
           spack env create . ${{matrix.env}}
           spack --env . config add config:install_tree:padded_length:128
           spack --env . repo update
+          spack --env . buildcache list --allarch
+      - name: Install
+        shell: spack-bash {0}
+        run: |
           spack --env . concretize
           spack --env . install --include-build-deps --show-log-on-error
       - name: Push packages and update index
