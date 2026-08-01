@@ -42,8 +42,8 @@ jobs:
       - name: Install
         shell: spack-bash {0}
         run: |
-          spack --env . concretize
-          spack --env . install --test root --include-build-deps --show-log-on-error
+          spack --env . concretize --test root
+          spack --env . install --include-build-deps --show-log-on-error
       # - name: Push packages and update index
       #   shell: spack-bash {0}
       #   env:
