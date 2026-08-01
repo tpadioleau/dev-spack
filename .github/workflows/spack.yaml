@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - gyselalibxx.yaml
+          - gysela.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:
@@ -54,3 +54,4 @@ jobs:
       - name: Setup tmate session
         if: ${{ failure() }}
         uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 30
