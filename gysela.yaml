@@ -33,15 +33,12 @@ spack:
     py-pandas:
       prefer: 
         - '~performance'
-    freetype:
-      prefer:
-        - '@2.14.1'
   repos:
     patches:
       git: https://github.com/gyselax/spack.git
       branch: releases/v2026.06
     builtin:
-      branch: releases/v2026.06
+      branch: develop
   specs:
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
