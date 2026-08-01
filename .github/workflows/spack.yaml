@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -17,13 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - dev-benchmark-euler-kernels.yaml
           - dev-ddc.yaml
-          - dev-gmgpolar.yaml
-          - dev-gyselalibxx.yaml
-          - dev-heraclespp.yaml
-          - dev-kokkos.yaml
-          - dev-kokkos-fft.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:
@@ -40,13 +35,28 @@ jobs:
         shell: spack-bash {0}
         run: |
           spack env create . ${{matrix.env}}
-          spack --env . config add config:install_tree:padded_length:128
           spack --env . repo update
           spack --env . install
-      - name: Push packages and update index
+      - name: Checkout built branch
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+        with:
+          repository: CExA-project/ddc
+          path: ddc
+      - name: Install
         shell: spack-bash {0}
-        env:
-          GITHUB_USER: ${{github.actor}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: spack --env . buildcache push --allow-missing --fail-fast --update-index local-buildcache
-        if: ${{!cancelled()}}
+        run: |
+          spack env activate .
+          cmake  -D CMAKE_EXPORT_COMPILE_COMMANDS=ON -D DDC_BUILD_EXAMPLES=OFF -D DDC_BUILD_KERNELS_FFT=OFF -D DDC_BUILD_KERNELS_SPLINES=OFF -D DDC_BUILD_PDI_WRAPPER=OFF -S ddc -B build
+      - name: Download Template coverage
+        run: |
+          wget https://github.com/petiaccja/TemplateCoverage/releases/download/v1.4.0/TemplateCoverage_Linux_x86_64.zip
+          unzip TemplateCoverage_Linux_x86_64.zip
+          chmod +x ./TemplateCoverage_Linux_x86_64/template-coverage
+      - name: Template coverage
+        run: |
+          spack env activate .
+          export RESOURCE_DIR=$(clang++ -print-resource-dir)
+          python3 ./TemplateCoverage_Linux_x86_64/run_on_compile_commands.py -p build/compile_commands.json TemplateCoverage_Linux_x86_64/template-coverage -- --format=lcov --out-file=template_coverage.info -extra-arg=-resource-dir=$RESOURCE_DIR
+      - name: Display results
+        run: |
+          cat template_coverage.info
