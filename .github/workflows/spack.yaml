@@ -46,7 +46,7 @@ jobs:
         shell: spack-bash {0}
         run: |
           spack env activate .
-          cmake  -D CMAKE_EXPORT_COMPILE_COMMANDS=ON -D DDC_BUILD_EXAMPLES=OFF -D DDC_BUILD_KERNELS_FFT=OFF -D DDC_BUILD_KERNELS_SPLINES=OFF -D DDC_BUILD_PDI_WRAPPER=OFF -S ddc -B build
+          cmake -D CMAKE_VERIFY_INTERFACE_HEADER_SETS=ON -D CMAKE_EXPORT_COMPILE_COMMANDS=ON -D DDC_BUILD_EXAMPLES=OFF -D DDC_BUILD_KERNELS_FFT=OFF -D DDC_BUILD_KERNELS_SPLINES=OFF -D DDC_BUILD_PDI_WRAPPER=OFF -S ddc -B build
       - name: Download Template coverage
         run: |
           wget https://github.com/petiaccja/TemplateCoverage/releases/download/v1.4.0/TemplateCoverage_Linux_x86_64.zip
@@ -56,7 +56,10 @@ jobs:
         run: |
           spack env activate .
           export RESOURCE_DIR=$(clang++ -print-resource-dir)
-          python3 ./TemplateCoverage_Linux_x86_64/run_on_compile_commands.py -p build/compile_commands.json TemplateCoverage_Linux_x86_64/template-coverage -- --format=lcov --out-file=template_coverage.info -extra-arg=-resource-dir=$RESOURCE_DIR
-      - name: Display results
-        run: |
-          cat template_coverage.info
+          python3 ./TemplateCoverage_Linux_x86_64/run_on_compile_commands.py -p build/compile_commands.json TemplateCoverage_Linux_x86_64/template-coverage -- --format=lcov --out-file=template_coverage.lcov -extra-arg=-resource-dir=$RESOURCE_DIR
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
+          disable_search: true
+          files: template_coverage.lcov
