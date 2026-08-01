@@ -3,15 +3,6 @@ spack:
   concretizer:
     reuse: false
     unify: true
-  config:
-    sandbox:
-      enable: true
-      allow_network: false
-      allow_read:
-        - /
-      allow_write:
-        - /home/runner
-        - /dev
   mirrors:
     local-buildcache:
       url: oci://ghcr.io/tpadioleau/dev-spack-ubuntu-26.04
@@ -45,17 +36,15 @@ spack:
     freetype:
       prefer:
         - '@2.14.1'
-    openmpi:
-      prefer:
-        - '+openshmem'
   repos:
     patches:
       git: https://github.com/gyselax/spack.git
-      branch: releases/v2026.06-debug
+      branch: releases/v2026.06
     builtin:
       branch: releases/v2026.06
   specs:
     - 'gyselalibxx'
+    - 'gysela-mini-app-io'
   view:
     default:
       projections:
