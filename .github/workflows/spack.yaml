@@ -43,7 +43,7 @@ jobs:
           spack env create . ${{matrix.env}}
           spack --env . config add config:install_tree:padded_length:128
           spack --env . repo update
-          spack --env . buildcache list --allarch
+          spack --env . buildcache list
       - name: Install
         shell: spack-bash {0}
         run: |
