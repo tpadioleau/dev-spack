@@ -8,5 +8,5 @@ for env in "${envs[@]}"
 do
   spack env remove --yes-to-all ${env} || true
   spack env create ${env} dev-${env}.yaml
-  spack --env ${env} install --use-buildcache only
+  spack --env ${env} install --include-build-deps --use-buildcache only
 done
