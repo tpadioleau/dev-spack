@@ -39,7 +39,7 @@ spack:
       branch: releases/v2026.06
   specs:
     - 'gcc@15.2'
-    - 'cmake@4.2'
+    - 'cmake@4.3'
     - 'googletest@1.17 +gmock'
   view:
     default:

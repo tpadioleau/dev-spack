@@ -50,7 +50,7 @@ spack:
       branch: releases/v2026.06
   specs:
     - 'gcc@15.2'
-    - 'cmake@4.2'
+    - 'cmake@4.3'
     - 'ddc@0.15 +fft +pdi +splines'
     - 'ginkgo@1.11'
     - 'gmgpolar@2.3'

@@ -40,7 +40,7 @@ spack:
   specs:
     - 'gcc@15.2'
     - 'benchmark@1.9 ~performance_counters'
-    - 'cmake@4.2'
+    - 'cmake@4.3'
     - 'googletest@1.17 +gmock'
     - 'kokkos@5.1'
     - 'ninja@1.13'

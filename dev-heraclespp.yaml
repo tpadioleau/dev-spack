@@ -42,7 +42,7 @@ spack:
   specs:
     - 'gcc@15.2'
     - 'benchmark@1.9 ~performance_counters'
-    - 'cmake@4.2'
+    - 'cmake@4.3'
     - 'doxygen@1.17'
     - 'googletest@1.17'
     - 'hdf5@1.14 +mpi'
