@@ -48,13 +48,13 @@ jobs:
           mkdir tmp_spack
           export TMPDIR=$PWD/tmp_spack
           spack --env . install --fail-fast --include-build-deps --show-log-on-error
-      # - name: Push packages and update index
-      #   shell: spack-bash {0}
-      #   env:
-      #     GITHUB_USER: ${{github.actor}}
-      #     GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-      #   run: spack --env . buildcache push --fail-fast --update-index local-buildcache
-      #   if: ${{!cancelled()}}
+      - name: Push packages and update index
+        shell: spack-bash {0}
+        env:
+          GITHUB_USER: ${{github.actor}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: spack --env . buildcache push --fail-fast --update-index local-buildcache
+        if: ${{!cancelled()}}
       - name: Setup tmate session
         if: ${{ failure() }}
         uses: mxschmitt/action-tmate@v3
