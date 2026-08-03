@@ -5,7 +5,7 @@ spack:
     unify: true
   mirrors:
     local-buildcache:
-      url: oci://ghcr.io/tpadioleau/dev-spack-ubuntu-26.04
+      url: oci://ghcr.io/tpadioleau/develop-ubuntu-26.04
       binary: true
       signed: false
       access_pair:
@@ -40,6 +40,9 @@ spack:
     builtin:
       branch: develop
   specs:
+    - 'kokkos +tests'
+    - 'kokkos-fft +tests'
+    - 'ddc'
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
   view:
