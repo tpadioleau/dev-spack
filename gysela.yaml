@@ -31,7 +31,7 @@ spack:
       prefer:
         - '~dataframe'
     py-pandas:
-      prefer: 
+      prefer:
         - '~performance'
   repos:
     patches:
