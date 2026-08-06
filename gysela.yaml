@@ -41,7 +41,7 @@ spack:
       branch: develop
   specs:
     - 'kokkos +tests'
-    - 'kokkos-fft +tests'
+    - 'kokkos-fft'
     - 'ddc'
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
