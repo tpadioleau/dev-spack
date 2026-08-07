@@ -44,6 +44,7 @@ spack:
     - 'kokkos-fft'
     - 'kokkos-kernels +execspace_serial'
     - 'ddc'
+    - 'ginkgo'
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
   view:
