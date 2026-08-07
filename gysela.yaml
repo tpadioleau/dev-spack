@@ -42,6 +42,7 @@ spack:
   specs:
     - 'kokkos +tests'
     - 'kokkos-fft'
+    - 'kokkos-kernels +execspace_serial'
     - 'ddc'
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
