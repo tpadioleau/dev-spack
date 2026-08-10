@@ -3,6 +3,15 @@ spack:
   concretizer:
     reuse: false
     unify: true
+  config:
+    sandbox:
+      enable: true
+      allow_network: true
+      allow_read:
+        - /
+      allow_write:
+        - /home/runner
+        - /dev
   mirrors:
     local-buildcache:
       url: oci://ghcr.io/tpadioleau/develop-ubuntu-26.04
@@ -45,6 +54,7 @@ spack:
     - 'kokkos-kernels +execspace_serial'
     - 'ddc'
     - 'ginkgo'
+    - 'gmgpolar'
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
   view:
