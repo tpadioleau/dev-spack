@@ -46,9 +46,11 @@ spack:
     patches:
       git: https://github.com/gyselax/spack.git
       branch: releases/v2026.06
-    builtin:
+    tpadioleau-builtin:
       git: https://github.com/tpadioleau/spack-packages.git
       branch: test-all-packages
+    builtin:
+      branch: develop
   specs:
     - 'kokkos'
     - 'kokkos-fft'
