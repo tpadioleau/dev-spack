@@ -60,6 +60,7 @@ spack:
     - 'gmgpolar'
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
+    - 'mdspan'
     - 'paraconf'
     - 'pdi'
     - 'pdiplugin-decl-netcdf'
