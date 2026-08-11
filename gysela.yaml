@@ -47,9 +47,10 @@ spack:
       git: https://github.com/gyselax/spack.git
       branch: releases/v2026.06
     builtin:
-      branch: develop
+      git: https://github.com/tpadioleau/spack-packages.git
+      branch: test-all-packages
   specs:
-    - 'kokkos +tests'
+    - 'kokkos'
     - 'kokkos-fft'
     - 'kokkos-kernels +execspace_serial'
     - 'ddc'
@@ -57,6 +58,15 @@ spack:
     - 'gmgpolar'
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
+    - 'paraconf'
+    - 'pdi'
+    - 'pdiplugin-decl-netcdf'
+    - 'pdiplugin-mpi'
+    - 'pdiplugin-pycall'
+    - 'pdiplugin-serialize'
+    - 'pdiplugin-set-value'
+    - 'pdiplugin-trace'
+    - 'pdiplugin-user-code'
   view:
     default:
       projections:
