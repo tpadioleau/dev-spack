@@ -71,6 +71,7 @@ spack:
     - 'pdiplugin-set-value'
     - 'pdiplugin-trace'
     - 'pdiplugin-user-code'
+    - 'py-numpy'
   view:
     default:
       projections:
