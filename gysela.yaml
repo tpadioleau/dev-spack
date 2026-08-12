@@ -74,7 +74,7 @@ spack:
     - 'pdiplugin-set-value'
     - 'pdiplugin-trace'
     - 'pdiplugin-user-code'
-    - 'py-numpy'
+    # - 'py-numpy', error: ModuleNotFoundError: No module named 'numpy'
   view:
     default:
       projections:
