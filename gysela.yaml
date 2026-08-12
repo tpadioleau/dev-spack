@@ -55,15 +55,18 @@ spack:
     - 'kokkos'
     - 'kokkos-fft'
     - 'kokkos-tools'
+    # - 'kokkos-kernels', some tests do not link without some ETI
     - 'kokkos-kernels +execspace_serial'
     - 'ddc'
     - 'ginkgo'
     - 'gmgpolar'
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
+    # - 'mdspan', no releases
     - 'mdspan@stable'
     - 'paraconf'
     - 'pdi'
+    # - 'pdiplugin-decl-hdf5', some MPI tests require too many processes
     - 'pdiplugin-decl-netcdf'
     - 'pdiplugin-mpi'
     - 'pdiplugin-pycall'
