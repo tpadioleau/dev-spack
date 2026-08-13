@@ -52,17 +52,18 @@ spack:
     builtin:
       branch: develop
   specs:
-    - 'kokkos'
-    - 'kokkos-fft'
-    - 'kokkos-tools'
-    # - 'kokkos-kernels', some tests do not link without some ETI
-    - 'kokkos-kernels +execspace_serial'
     - 'ddc'
     - 'ginkgo'
     - 'gmgpolar'
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
     - 'hdf5 +mpi +shared'
+    - 'kokkos'
+    - 'kokkos-fft'
+    - 'kokkos-tools'
+    # - 'kokkos-kernels', some tests do not link without some ETI
+    - 'kokkos-kernels +execspace_serial'
+    # - 'koliop', tests consume too much memory
     # - 'mdspan', no releases
     - 'mdspan@stable'
     - 'netcdf-c'
