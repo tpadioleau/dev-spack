@@ -62,8 +62,10 @@ spack:
     - 'gmgpolar'
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
+    - 'hdf5 +mpi +shared'
     # - 'mdspan', no releases
     - 'mdspan@stable'
+    - 'netcdf-c'
     - 'paraconf'
     - 'pdi'
     # - 'pdiplugin-decl-hdf5', some MPI tests require too many processes
