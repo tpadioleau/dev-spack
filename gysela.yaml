@@ -67,6 +67,7 @@ spack:
     # - 'mdspan', no releases
     - 'mdspan@stable'
     - 'netcdf-c'
+    - 'openblas'
     - 'paraconf'
     - 'pdi'
     # - 'pdiplugin-decl-hdf5', some MPI tests require too many processes
