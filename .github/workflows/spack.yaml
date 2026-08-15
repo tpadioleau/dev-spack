@@ -49,5 +49,5 @@ jobs:
         env:
           GITHUB_USER: ${{github.actor}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: spack --env . buildcache push --fail-fast --update-index local-buildcache
+        run: spack --env . buildcache push --fail-fast --tag latest --update-index local-buildcache
         if: ${{!cancelled()}}
