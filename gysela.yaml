@@ -53,6 +53,7 @@ spack:
       branch: develop
   specs:
     - 'ddc'
+    - 'fmt'
     - 'ginkgo'
     - 'gmgpolar'
     - 'gyselalibxx'
@@ -79,6 +80,7 @@ spack:
     - 'pdiplugin-trace'
     - 'pdiplugin-user-code'
     # - 'py-numpy', error: ModuleNotFoundError: No module named 'numpy'
+    - 'spdlog'
   view:
     default:
       projections:
