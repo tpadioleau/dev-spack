@@ -71,7 +71,7 @@ spack:
     - 'openblas'
     - 'paraconf'
     - 'pdi'
-    # - 'pdiplugin-decl-hdf5', some MPI tests require too many processes
+    - 'pdiplugin-decl-hdf5'
     - 'pdiplugin-decl-netcdf'
     - 'pdiplugin-mpi'
     - 'pdiplugin-pycall'
