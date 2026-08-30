@@ -21,6 +21,7 @@ jobs:
           - dev-ddc.yaml
           - dev-gmgpolar.yaml
           - dev-gyselalibxx.yaml
+          - dev-gyselaxpp.yaml
           - dev-heraclespp.yaml
           - dev-kokkos.yaml
           - dev-kokkos-fft.yaml

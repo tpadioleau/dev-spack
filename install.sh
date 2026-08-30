@@ -4,7 +4,7 @@ set -e
 
 spack bootstrap now
 
-envs=(benchmark-euler-kernels ddc gmgpolar gyselalibxx heraclespp kokkos kokkos-fft)
+envs=(benchmark-euler-kernels ddc gmgpolar gyselalibxx gyselaxpp heraclespp kokkos kokkos-fft)
 
 for env in "${envs[@]}"
 do
