@@ -64,7 +64,7 @@ spack:
     - 'kokkos-tools'
     # - 'kokkos-kernels', some tests do not link without some ETI
     - 'kokkos-kernels +execspace_serial'
-    # - 'koliop', tests consume too much memory
+    - 'koliop'
     # - 'mdspan', no releases
     - 'mdspan@stable'
     - 'netcdf-c'
