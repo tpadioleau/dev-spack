@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -17,19 +18,17 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - dev-benchmark-euler-kernels.yaml
-          - dev-ddc.yaml
-          - dev-gmgpolar.yaml
-          - dev-gyselalibxx.yaml
-          - dev-gyselaxpp.yaml
-          - dev-heraclespp.yaml
-          - dev-kokkos.yaml
-          - dev-kokkos-fft.yaml
+          - kokkos-cuda.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:
       packages: write  # Required to push to registry
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be  # v1.3.1
+        with:
+          tool-cache: true
+          large-packages: false
       - name: Checkout built branch
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
       - name: Set up Spack
@@ -49,11 +48,6 @@ jobs:
         shell: spack-bash {0}
         run: |
           spack --env . concretize
+          mkdir tmp_spack
+          export TMPDIR=$PWD/tmp_spack
           spack --env . install --fail-fast --include-build-deps --show-log-on-error
-      - name: Push packages and update index
-        shell: spack-bash {0}
-        env:
-          GITHUB_USER: ${{github.actor}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: spack --env . buildcache push --fail-fast --update-index local-buildcache
-        if: ${{!cancelled()}}
