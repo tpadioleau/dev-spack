@@ -39,8 +39,12 @@ jobs:
           spack --env . config add config:install_tree:padded_length:128
           spack --env . repo update
           spack --env . buildcache list
+          spack --env . mirror set --autopush local-buildcache
       - name: Install
         shell: spack-bash {0}
+        env:
+          GITHUB_USER: ${{github.actor}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
           spack --env . concretize --test root
           spack --env . install --test root --fail-fast --include-build-deps --show-log-on-error
