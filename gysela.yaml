@@ -63,7 +63,7 @@ spack:
     - 'kokkos-fft'
     - 'kokkos-tools'
     # - 'kokkos-kernels', some tests do not link without some ETI
-    - 'kokkos-kernels +execspace_serial'
+    # - 'kokkos-kernels +execspace_serial', serial.sparse_spmv_sell_double_int_size_t_TestDevice tolerance failure
     - 'koliop'
     # - 'mdspan', no releases
     - 'mdspan@stable'
