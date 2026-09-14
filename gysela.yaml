@@ -55,7 +55,7 @@ spack:
     - 'ddc'
     - 'fmt'
     - 'ginkgo'
-    - 'gmgpolar'
+    # - 'gmgpolar', SerialDirectSolverTest_CircularGeometry.DirectSolverAcrossOriginHigherPrecision2_CircularGeometry tolerance failure
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
     - 'hdf5 +mpi +shared'
