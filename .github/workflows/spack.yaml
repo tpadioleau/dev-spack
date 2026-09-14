@@ -48,6 +48,8 @@ jobs:
         run: |
           spack --env . concretize --test root
           spack --env . install --test root --fail-fast --include-build-deps --show-log-on-error
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Push packages and update index
         shell: spack-bash {0}
         env:
