@@ -20,6 +20,7 @@ jobs:
         env:
           - kokkos-before-fix.yaml
           - kokkos-after-fix.yaml
+          - kokkos-link-dep.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:
@@ -61,6 +62,7 @@ jobs:
         env:
           - kokkos-before-fix.yaml
           - kokkos-after-fix.yaml
+          - kokkos-link-dep.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     steps:
