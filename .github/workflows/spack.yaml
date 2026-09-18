@@ -77,15 +77,9 @@ jobs:
           spack env create . ${{matrix.env}}
           spack --env . repo update
           spack --env . install
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
-        with:
-          repository: gyselax/spack
-          path: gyselax-spack
-          ref: releases/v2026.06
-      - name: Install GMGPolar
+      - name: Install DDC
         shell: spack-bash {0}
         run: |
-          spack env create gmgpolar
-          spack --env gmgpolar repo add gyselax-spack/spack_repo/patches_common
-          spack --env gmgpolar add gmgpolar
-          spack --env gmgpolar install
+          spack env create ddc
+          spack --env ddc add ddc ~fft ~pdi ~splines
+          spack --env ddc install
