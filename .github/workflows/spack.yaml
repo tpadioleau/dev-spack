@@ -17,9 +17,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        env:
-          - kokkos-before-fix.yaml
-          - kokkos-after-fix.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:
@@ -31,27 +28,13 @@ jobs:
         uses: spack/setup-spack@16b756799ede8b28951287f89bcd3fdb32ec1ca3  # v3.0.0
         with:
           spack_ref: v1.2.2
-          buildcache: false
-      - name: Prepare environment
-        shell: spack-bash {0}
-        run: |
-          spack bootstrap now
-          spack env create . ${{matrix.env}}
-          spack --env . config add config:install_tree:padded_length:128
-          spack --env . repo update
-          spack --env . buildcache list
+          buildcache: true
       - name: Install
         shell: spack-bash {0}
         run: |
-          spack --env . concretize
-          spack --env . install --fail-fast --include-build-deps --show-log-on-error
-      - name: Push packages and update index
-        shell: spack-bash {0}
-        env:
-          GITHUB_USER: ${{github.actor}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: spack --env . buildcache push --fail-fast --update-index local-buildcache
-        if: ${{!cancelled()}}
+          spack env create dev-gmgpolar dev-gmgpolar.yaml
+          spack --env dev-gmgpolar repo update
+          spack --env dev-gmgpolar install
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
         with:
           repository: gyselax/spack
@@ -60,6 +43,7 @@ jobs:
       - name: Install GMGPolar
         shell: spack-bash {0}
         run: |
-          spack --env . repo add gyselax-spack/spack_repo/patches_common
-          spack --env . add gmgpolar target=$(spack arch --target)
-          spack --env . install
+          spack env create gmgpolar
+          spack --env gmgpolar repo add gyselax-spack/spack_repo/patches_common
+          spack --env gmgpolar add gmgpolar
+          spack --env gmgpolar install
