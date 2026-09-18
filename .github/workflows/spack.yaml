@@ -31,7 +31,7 @@ jobs:
         uses: spack/setup-spack@16b756799ede8b28951287f89bcd3fdb32ec1ca3  # v3.0.0
         with:
           spack_ref: v1.2.2
-          buildcache: true
+          buildcache: false
       - name: Prepare environment
         shell: spack-bash {0}
         run: |
@@ -52,8 +52,14 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: spack --env . buildcache push --fail-fast --update-index local-buildcache
         if: ${{!cancelled()}}
-      - name: Install DDC
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
+        with:
+          repository: gyselax/spack
+          path: gyselax-spack
+          ref: releases/v2026.06
+      - name: Install GMGPolar
         shell: spack-bash {0}
         run: |
-          spack --env . add ddc ~fft ~pdi ~splines
+          spack --env . repo add gyselax-spack/spack_repo/patches_common
+          spack --env . add gmgpolar target=$(spack arch --target)
           spack --env . install
