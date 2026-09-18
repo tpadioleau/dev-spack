@@ -31,6 +31,7 @@ spack:
     builtin:
       branch: releases/v2026.06
   specs:
+    - 'gcc@15.2'
     - 'kokkos@5.1'
   view:
     default:
