@@ -3,15 +3,9 @@ spack:
   concretizer:
     reuse: false
     unify: true
-  config:
-    sandbox:
-      enable: true
-      allow_network: false
-      allow_read:
-        - /
   mirrors:
     local-buildcache:
-      url: oci://ghcr.io/tpadioleau/dev-spack-ubuntu-26.04
+      url: oci://ghcr.io/tpadioleau/test-kokkos-spack-ubuntu-26.04
       binary: true
       source: false
       signed: false
@@ -36,11 +30,8 @@ spack:
       require: 'gcc@15.2'
   repos:
     builtin:
-      branch: releases/v2026.06
+      branch: kokkos-cxx-wrapper
   specs:
-    - 'gcc@15.2'
-    - 'cmake@4.3'
-    - 'googletest@1.17 +gmock'
     - 'kokkos@5.1'
   view:
     default:

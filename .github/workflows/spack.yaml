@@ -3,6 +3,7 @@ name: Build Spack env
 
 # yamllint disable-line rule:truthy
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -17,14 +18,8 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - dev-benchmark-euler-kernels.yaml
-          - dev-ddc.yaml
-          - dev-gmgpolar.yaml
-          - dev-gyselalibxx.yaml
-          - dev-gyselaxpp.yaml
-          - dev-heraclespp.yaml
-          - dev-kokkos.yaml
-          - dev-kokkos-fft.yaml
+          - kokkos-before-fix.yaml
+          - kokkos-after-fix.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:
@@ -57,3 +52,8 @@ jobs:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: spack --env . buildcache push --fail-fast --update-index local-buildcache
         if: ${{!cancelled()}}
+      - name: Install DDC
+        shell: spack-bash {0}
+        run: |
+          spack --env . add ddc ~fft ~pdi ~splines
+          spack --env . install
