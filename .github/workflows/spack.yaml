@@ -24,6 +24,7 @@ jobs:
           - dev-gyselaxpp.yaml
           - dev-heraclespp.yaml
           - dev-kokkos.yaml
+          - dev-kokkos-comm.yaml
           - dev-kokkos-fft.yaml
           - dev-mini-app-io.yaml
           - dev-mini-app-poisson.yaml
