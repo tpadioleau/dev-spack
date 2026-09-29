@@ -54,6 +54,8 @@ jobs:
         shell: spack-bash {0}
         run: |
           spack --env . concretize
+          mkdir tmp_spack
+          export TMPDIR=$PWD/tmp_spack
           spack --env . install --fail-fast --include-build-deps --show-log-on-error
       - name: Push packages and update index
         shell: spack-bash {0}
