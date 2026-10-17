@@ -45,12 +45,12 @@ spack:
   repos:
     patches:
       git: https://github.com/gyselax/spack.git
-      branch: releases/v2026.06
+      branch: releases/v2026.10
     builtin:
-      branch: releases/v2026.06
+      branch: releases/v2026.10
   specs:
     - 'gcc@15.2'
-    - 'cmake@4.3'
+    - 'cmake@4.4'
     - 'gyselalibxx@0.8'
     - 'ninja@1.13'
     - 'pdiplugin-decl-hdf5@1.11 +mpi'
@@ -61,7 +61,7 @@ spack:
     - 'py-gysmc'
     - 'py-h5py@3.16'
     - 'py-imageio@2.37'
-    - 'py-matplotlib@3.11 ^freetype@2.14.1'
+    - 'py-matplotlib@3.11'
     - 'py-netcdf4@1.7'
     - 'py-numexpr@2.14'
     - 'py-numpy@2.4'

@@ -36,11 +36,11 @@ spack:
       require: 'gcc@15.2'
   repos:
     builtin:
-      branch: releases/v2026.06
+      branch: releases/v2026.10
   specs:
     - 'gcc@15.2'
-    - 'cmake@4.3'
-    - 'googletest@1.17 +gmock'
+    - 'cmake@4.4'
+    - 'googletest@1.18 +gmock'
   view:
     default:
       projections:

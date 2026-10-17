@@ -48,12 +48,12 @@ spack:
   repos:
     patches:
       git: https://github.com/gyselax/spack.git
-      branch: releases/v2026.06
+      branch: releases/v2026.10
     builtin:
-      branch: releases/v2026.06
+      branch: releases/v2026.10
   specs:
     - 'gcc@15.2'
-    - 'cmake@4.3'
+    - 'cmake@4.4'
     - 'gyselalibxx@0.8'
     - 'ninja@1.13'
     - 'py-scimba@1.3'

@@ -45,19 +45,19 @@ spack:
   repos:
     patches:
       git: https://github.com/gyselax/spack.git
-      branch: releases/v2026.06
+      branch: releases/v2026.10
     builtin:
-      branch: releases/v2026.06
+      branch: releases/v2026.10
   specs:
     - 'gcc@15.2'
-    - 'cmake@4.3'
+    - 'cmake@4.4'
     - 'ddc@0.16 +fft +pdi +splines'
     - 'ginkgo@1.11'
     - 'gmgpolar@2.3'
-    - 'googletest@1.17 +gmock'
-    - 'kokkos@5.1'
-    - 'kokkos-kernels@5.1'
-    - 'kokkos-tools@git.3d33d0a783c5321d6981b3b4e43d3c157d2ca887=develop'
+    - 'googletest@1.18 +gmock'
+    - 'kokkos@5.2'
+    - 'kokkos-kernels@5.2'
+    - 'kokkos-tools@5.2'
     - 'koliop@0.2'
     - 'ninja@1.13'
     - 'openblas@0.3'
@@ -72,7 +72,7 @@ spack:
     - 'py-gysmc'
     - 'py-h5py@3.16'
     - 'py-imageio@2.37'
-    - 'py-matplotlib@3.11 ^freetype@2.14.1'
+    - 'py-matplotlib@3.11'
     - 'py-netcdf4@1.7'
     - 'py-numexpr@2.14'
     - 'py-numpy@2.4'

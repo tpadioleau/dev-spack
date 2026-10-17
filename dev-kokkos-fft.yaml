@@ -36,15 +36,15 @@ spack:
       require: 'gcc@15.2'
   repos:
     builtin:
-      branch: releases/v2026.06
+      branch: releases/v2026.10
   specs:
     - 'gcc@15.2'
     - 'benchmark@1.9 ~performance_counters'
-    - 'cmake@4.3'
+    - 'cmake@4.4'
     - 'doxygen@1.17'
     - 'fftw@3.3 precision=float,double'
-    - 'googletest@1.17 +gmock'
-    - 'kokkos@5.1'
+    - 'googletest@1.18 +gmock'
+    - 'kokkos@5.2'
     - 'ninja@1.13'
     - 'py-gcovr@8.6'
   view:

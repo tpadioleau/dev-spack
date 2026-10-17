@@ -36,11 +36,11 @@ spack:
       require: 'gcc@15.2'
   repos:
     builtin:
-      branch: releases/v2026.06
+      branch: releases/v2026.10
   specs:
     - 'gcc@15.2'
-    - 'cmake@4.3'
-    - 'kokkos@5.1'
+    - 'cmake@4.4'
+    - 'kokkos@5.2'
     - 'ninja@1.13'
   view:
     default:
