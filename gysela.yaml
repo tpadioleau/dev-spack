@@ -55,15 +55,15 @@ spack:
     - 'ddc'
     - 'fmt'
     - 'ginkgo'
-    # - 'gmgpolar', SerialDirectSolverTest_CircularGeometry.DirectSolverAcrossOriginHigherPrecision2_CircularGeometry tolerance failure
+    - 'gmgpolar'
     - 'gyselalibxx'
     - 'gysela-mini-app-io'
-    - 'hdf5 +mpi +shared'
+    - 'hdf5 +mpi +shared +subfiling'
     - 'kokkos'
     - 'kokkos-fft'
     - 'kokkos-tools'
     # - 'kokkos-kernels', some tests do not link without some ETI
-    # - 'kokkos-kernels +execspace_serial', serial.sparse_spmv_sell_double_int_size_t_TestDevice tolerance failure
+    - 'kokkos-kernels +execspace_serial'
     - 'koliop'
     # - 'mdspan', no releases
     - 'mdspan@stable'
