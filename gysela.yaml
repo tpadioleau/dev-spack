@@ -31,11 +31,11 @@ spack:
         - '~mpi'
         - '~fortran'
     c:
-      require: 'gcc@15.2'
+      require: 'gcc@16'
     cxx:
-      require: 'gcc@15.2'
+      require: 'gcc@16'
     fortran:
-      require: 'gcc@15.2'
+      require: 'gcc@16'
     py-dask:
       prefer:
         - '~dataframe'
