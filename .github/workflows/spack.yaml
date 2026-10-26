@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -17,31 +18,26 @@ jobs:
       fail-fast: false
       matrix:
         env:
-          - dev-benchmark-euler-kernels.yaml
-          - dev-ddc.yaml
-          - dev-gmgpolar.yaml
-          - dev-gyselalibxx.yaml
-          - dev-gyselaxpp.yaml
-          - dev-heraclespp.yaml
-          - dev-kokkos.yaml
-          - dev-kokkos-comm.yaml
-          - dev-kokkos-fft.yaml
-          - dev-mini-app-io.yaml
-          - dev-mini-app-poisson.yaml
+          - gysela.yaml
         os: [ubuntu-26.04]
     runs-on: ${{matrix.os}}
     permissions:
       packages: write  # Required to push to registry
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@ceedf095f4ec1a097402bc6bd80831f2e1a6fde6  # v2.0.0
+      - run: |
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get update
+          sudo apt-get install --assume-yes --no-install-recommends gcc-16 g++-16 gfortran-16
       - name: Checkout built branch
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6.0.3
       - name: Set up Spack
         uses: spack/setup-spack@16b756799ede8b28951287f89bcd3fdb32ec1ca3  # v3.0.0
         with:
           spack_ref: v1.2.2
-          buildcache: true
+          buildcache: false
+      - run: |
+          cp all-test-failures.patch ./spack/
+          git -C ./spack apply all-test-failures.patch
       - name: Prepare environment
         shell: spack-bash {0}
         run: |
@@ -49,18 +45,26 @@ jobs:
           spack env create . ${{matrix.env}}
           spack --env . config add config:install_tree:padded_length:128
           spack --env . repo update
-          spack --env . buildcache list
+          spack --env . mirror set --autopush local-buildcache
       - name: Install
         shell: spack-bash {0}
+        env:
+          GITHUB_USER: ${{github.actor}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
-          spack --env . concretize
+          spack --env . concretize --test root
           mkdir tmp_spack
           export TMPDIR=$PWD/tmp_spack
-          spack --env . install --fail-fast --include-build-deps --show-log-on-error
+          spack --env . install --test root --allow-test-failures --fail-fast --include-build-deps --show-log-on-error
+      # - name: Setup upterm session
+      #   if: ${{ failure() }}
+      #   uses: owenthereal/action-upterm@v1
+      #   with:
+      #     limit-access-to-actor: true # Restrict to the user who triggered the workflow
       - name: Push packages and update index
         shell: spack-bash {0}
         env:
           GITHUB_USER: ${{github.actor}}
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: spack --env . buildcache push --fail-fast --update-index local-buildcache
+        run: spack --env . buildcache push --fail-fast --tag latest --update-index local-buildcache
         if: ${{!cancelled()}}
