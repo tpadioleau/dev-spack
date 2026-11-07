@@ -49,19 +49,16 @@ jobs:
           spack bootstrap now
           spack env create . ${{matrix.env}}
           spack --env . config add config:install_tree:padded_length:128
+          spack --env . mirror set --autopush github-buildcache
           spack --env . repo update
           spack --env . buildcache list
       - name: Install
         shell: spack-bash {0}
+        env:
+          GITHUB_USER: ${{github.actor}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
           spack --env . concretize
           mkdir tmp_spack
           export TMPDIR=$PWD/tmp_spack
           spack --env . install --fail-fast --include-build-deps --show-log-on-error
-      - name: Push packages and update index
-        shell: spack-bash {0}
-        env:
-          GITHUB_USER: ${{github.actor}}
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: spack --env . buildcache push --fail-fast --update-index local-buildcache
-        if: ${{!cancelled()}}
