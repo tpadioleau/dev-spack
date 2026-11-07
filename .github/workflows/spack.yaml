@@ -15,6 +15,7 @@ jobs:
   build-spack-env:
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         env:
           - dev-benchmark-euler-kernels.yaml
