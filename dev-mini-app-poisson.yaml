@@ -12,7 +12,7 @@ spack:
       allow_write:
         - /home/runner
   mirrors:
-    github-buildcache:
+    local-buildcache:
       url: oci://ghcr.io/tpadioleau/dev-spack-ubuntu-26.04
       binary: true
       source: false
