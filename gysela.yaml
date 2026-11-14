@@ -65,8 +65,7 @@ spack:
     # - 'kokkos-kernels', some tests do not link without some ETI
     - 'kokkos-kernels +execspace_serial'
     - 'koliop'
-    # - 'mdspan', no releases
-    - 'mdspan@stable'
+    - 'mdspan'
     - 'netcdf-c'
     - 'openblas'
     - 'paraconf'
@@ -79,7 +78,6 @@ spack:
     - 'pdiplugin-set-value'
     - 'pdiplugin-trace'
     - 'pdiplugin-user-code'
-    # - 'py-numpy', error: ModuleNotFoundError: No module named 'numpy'
     - 'spdlog'
   view:
     default:
