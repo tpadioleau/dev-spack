@@ -1,0 +1,480 @@
+diff --git a/lib/spack/spack/builder.py b/lib/spack/spack/builder.py
+index 35a3564..b95ed44 100644
+--- a/lib/spack/spack/builder.py
++++ b/lib/spack/spack/builder.py
+@@ -138,6 +138,9 @@ def __init__(self, wrapped_pkg_object, root_builder):
+                 {
+                     "__module__": package_cls.__module__,
+                     "run_tests": property(lambda x: x.wrapped_package_object.run_tests),
++                    "allow_test_failures": property(
++                        lambda x: x.wrapped_package_object.allow_test_failures
++                    ),
+                     "test_requires_compiler": property(
+                         lambda x: x.wrapped_package_object.test_requires_compiler
+                     ),
+diff --git a/lib/spack/spack/cmd/install.py b/lib/spack/spack/cmd/install.py
+index 959cc44..d789486 100644
+--- a/lib/spack/spack/cmd/install.py
++++ b/lib/spack/spack/cmd/install.py
+@@ -50,6 +50,7 @@ def install_kwargs_from_args(args):
+ 
+     return {
+         "fail_fast": args.fail_fast,
++        "allow_test_failures": args.allow_test_failures,
+         "keep_prefix": args.keep_prefix,
+         "keep_stage": args.keep_stage,
+         "restage": not args.dont_restage,
+@@ -216,6 +217,13 @@ def setup_parser(subparser: argparse.ArgumentParser) -> None:
+         choices=["root", "all"],
+         help="run tests on only root packages or all packages",
+     )
++    subparser.add_argument(
++        "--allow-test-failures",
++        action="store_true",
++        default=False,
++        help="with --test, report failing install-time tests as warnings instead of failing "
++        "the installation",
++    )
+     arguments.add_common_arguments(subparser, ["log_format"])
+     subparser.add_argument("--log-file", default=None, help="filename for the log file")
+     subparser.add_argument(
+diff --git a/lib/spack/spack/install_test.py b/lib/spack/spack/install_test.py
+index 5cc5426..405da49 100644
+--- a/lib/spack/spack/install_test.py
++++ b/lib/spack/spack/install_test.py
+@@ -360,6 +360,7 @@ def phase_tests(self, builder, phase_name: str, method_names: List[str]):
+         """
+         verbose = tty.is_verbose()
+         fail_fast = spack.config.get("config:fail_fast", False)
++        allow_failures = bool(getattr(builder.pkg, "allow_test_failures", False))
+ 
+         with self.test_logger(verbose=verbose, externals=False) as logger:
+             # Report running each of the methods in the build log
+@@ -382,14 +383,38 @@ def phase_tests(self, builder, phase_name: str, method_names: List[str]):
+                     continue
+ 
+                 print_message(logger, f"RUN-TESTS: {phase_name}-time tests [{name}]", verbose)
+-                fn()
++                if not allow_failures:
++                    fn()
++                    continue
++
++                # Failures are tolerated: a test callback that raises (for example because
++                # ``make test`` exited with a non-zero status) is recorded as a failure instead
++                # of aborting the installation.
++                try:
++                    fn()
++                except spack.error.StopPhase:
++                    raise
++                except Exception as e:
++                    msg = f"RUN-TESTS: {phase_name}-time tests [{name}] failed"
++                    print_message(logger, msg, verbose)
++                    self.add_failure(e, msg)
++                    if fail_fast:
++                        break
+ 
+             if have_tests:
+                 print_message(logger, "Completed testing", verbose)
+ 
+-            # Raise any collected failures here
+             if self.test_failures:
+-                raise TestFailure(self.test_failures)
++                if not allow_failures:
++                    # Raise any collected failures here
++                    raise TestFailure(self.test_failures)
++                # Always show this on the console, not only in the log file
++                with logger.force_echo():
++                    tty.warn(
++                        f"Ignoring {phase_name}-time test failures for {builder.pkg.spec.name} "
++                        f"(--allow-test-failures):\n{TestFailure(self.test_failures)}\n"
++                        f"See test results at:\n  {self.test_log_file}"
++                    )
+ 
+     def stand_alone_tests(self, kwargs, timeout: Optional[int] = None) -> None:
+         """Run the package's stand-alone tests.
+diff --git a/lib/spack/spack/installer.py b/lib/spack/spack/installer.py
+index 692501d..72c5b51 100644
+--- a/lib/spack/spack/installer.py
++++ b/lib/spack/spack/installer.py
+@@ -1252,6 +1252,7 @@ def start(self):
+ 
+         tests = install_args.get("tests")
+         pkg.run_tests = tests is True or tests and pkg.name in tests
++        pkg.allow_test_failures = bool(install_args.get("allow_test_failures", False))
+ 
+         # Use the binary cache to install if requested,
+         # save result to be handled in BuildTask.complete()
+@@ -1484,6 +1485,7 @@ def __init__(
+         stop_at: Optional[str] = None,
+         stop_before: Optional[str] = None,
+         tests: Union[bool, List[str], Set[str]] = False,
++        allow_test_failures: bool = False,
+         unsigned: Optional[bool] = None,
+         verbose: bool = False,
+         concurrent_packages: Optional[int] = None,
+@@ -1552,6 +1554,7 @@ def __init__(
+             "stop_at": stop_at,
+             "stop_before": stop_before,
+             "tests": tests,
++            "allow_test_failures": allow_test_failures,
+             "unsigned": unsigned,
+             "verbose": verbose,
+             "concurrent_packages": self.concurrent_packages,
+diff --git a/lib/spack/spack/installer_dispatch.py b/lib/spack/spack/installer_dispatch.py
+index a70a5e4..27575be 100644
+--- a/lib/spack/spack/installer_dispatch.py
++++ b/lib/spack/spack/installer_dispatch.py
+@@ -34,6 +34,7 @@ def create_installer(
+     stop_at: Optional[str] = None,
+     stop_before: Optional[str] = None,
+     tests: Union[bool, List[str], Set[str]] = False,
++    allow_test_failures: bool = False,
+     unsigned: Optional[bool] = None,
+     verbose: bool = False,
+     concurrent_packages: Optional[int] = None,
+@@ -75,6 +76,7 @@ def create_installer(
+         stop_at=stop_at,
+         stop_before=stop_before,
+         tests=tests,
++        allow_test_failures=allow_test_failures,
+         unsigned=unsigned,
+         verbose=verbose,
+         concurrent_packages=concurrent_packages,
+diff --git a/lib/spack/spack/new_installer.py b/lib/spack/spack/new_installer.py
+index 3a82faa..09a7852 100644
+--- a/lib/spack/spack/new_installer.py
++++ b/lib/spack/spack/new_installer.py
+@@ -252,6 +252,27 @@ def send_progress(current: int, total: int, state_pipe: io.TextIOWrapper) -> Non
+     state_pipe.write("\n")
+ 
+ 
++def send_warning(message: str, state_pipe: io.TextIOWrapper) -> None:
++    """Send a warning that the parent prints once the installation is over."""
++    json.dump({"warning": message}, state_pipe, separators=(",", ":"))
++    state_pipe.write("\n")
++
++
++def send_ignored_test_failures(pkg: "spack.package_base.PackageBase", state_pipe) -> None:
++    """If test failures were tolerated (``--allow-test-failures``), warn the parent process."""
++    if not (pkg.run_tests and pkg.allow_test_failures):
++        return
++    tester = pkg.tester
++    if not tester or not tester.test_failures:
++        return
++    num = len(tester.test_failures)
++    send_warning(
++        f"{pkg.spec.cformat('{name}{@version}')}: {num} test failure(s) ignored "
++        f"(--allow-test-failures). See test results at: {tester.test_log_file}",
++        state_pipe,
++    )
++
++
+ def send_installed_from_binary_cache(state_pipe: io.TextIOWrapper) -> None:
+     """Send a notification that the package was installed from binary cache."""
+     json.dump({"installed_from_binary_cache": True}, state_pipe, separators=(",", ":"))
+@@ -388,6 +409,7 @@ def worker_function(
+     fake: bool,
+     install_source: bool,
+     run_tests: bool,
++    allow_test_failures: bool,
+     state: IpcChannel,
+     parent: IpcChannel,
+     tee_control_r: IpcChannel,
+@@ -414,6 +436,7 @@ def worker_function(
+         keep_prefix: Whether to keep a failed installation prefix
+         skip_patch: Whether to skip the patch phase
+         run_tests: Whether to run install-time tests for this package
++        allow_test_failures: Whether failing install-time tests are reported as warnings
+         state: Connection to send state updates to
+         parent: Connection to send build output to
+         tee_control_r: Read end of the control pipe; the parent sends echo on/off here
+@@ -511,6 +534,7 @@ def handle_sigterm(signum, frame):
+                 run_tests,
+                 stop_before,
+                 stop_at,
++                allow_test_failures,
+             )
+     except spack.error.StopPhase:
+         exit_code = ExitCode.STOPPED_AT_PHASE
+@@ -682,12 +706,14 @@ def _install(
+     run_tests: bool = False,
+     stop_before: Optional[str] = None,
+     stop_at: Optional[str] = None,
++    allow_test_failures: bool = False,
+ ) -> None:
+     """Install a spec from build cache or source."""
+ 
+     # Create the stage and log file before starting the tee thread.
+     pkg = spec.package
+     pkg.run_tests = run_tests
++    pkg.allow_test_failures = allow_test_failures
+ 
+     if fake:
+         store.layout.create_install_directory(spec)
+@@ -791,6 +817,7 @@ def _install(
+                 send_state(f"stopped after {stop_at}", state_stream)
+                 raise spack.error.StopPhase(f"Stopping at '{stop_at}'")
+ 
++        send_ignored_test_failures(pkg, state_stream)
+         _archive_build_metadata(pkg)
+         spack.hooks.post_install(spec, explicit)
+ 
+@@ -809,6 +836,7 @@ def start_build(
+     fake: bool,
+     install_source: bool,
+     run_tests: bool,
++    allow_test_failures: bool,
+     jobserver: JobServerBase,
+     log_path: str,
+     stop_before: Optional[str] = None,
+@@ -852,6 +880,7 @@ def start_build(
+             fake,
+             install_source,
+             run_tests,
++            allow_test_failures,
+             state_w_conn,
+             output_w_conn,
+             control_r_conn,
+@@ -2015,6 +2044,7 @@ def __init__(
+         stop_at: Optional[str] = None,
+         stop_before: Optional[str] = None,
+         tests: Union[bool, List[str], Set[str]] = False,
++        allow_test_failures: bool = False,
+         unsigned: Optional[bool] = None,
+         verbose: bool = False,
+         concurrent_packages: Optional[int] = None,
+@@ -2028,6 +2058,7 @@ def __init__(
+         self.stop_at = stop_at
+         self.stop_before = stop_before
+         self.tests: Union[bool, List[str], Set[str]] = tests
++        self.allow_test_failures = allow_test_failures
+ 
+         self.db = spack.store.STORE.db
+ 
+@@ -2049,6 +2080,8 @@ def __init__(
+         # sequence, so framing is safe without decoding partial reads. Keyed by PID rather than fd
+         # because on Windows the state channel is a socket whose handle is not a stable POSIX fd.
+         self.state_buffers: Dict[int, bytes] = {}
++        #: Warnings sent by build processes, printed once the installation is over
++        self.build_warnings: List[str] = []
+ 
+         if explicit is True:
+             self.explicit = {spec.dag_hash() for spec in specs}
+@@ -2356,6 +2389,9 @@ def _installer(self) -> None:
+             if db_exc is not None:
+                 raise db_exc
+ 
++        for warning in self.build_warnings:
++            spack.llnl.util.tty.warn(warning)
++
+         try:
+             self.report_data.finalize(self.reports, build_graph=self.build_graph)
+         except Exception as e:
+@@ -2586,6 +2622,7 @@ def _start(
+             fake=self.fake,
+             install_source=self.install_source,
+             run_tests=run_tests,
++            allow_test_failures=self.allow_test_failures,
+             jobserver=jobserver,
+             log_path=self.log_paths[dag_hash],
+             stop_before=self.stop_before if is_root else None,
+@@ -2684,6 +2721,8 @@ def _handle_child_state(self, child_info: ChildInfo, selector: selectors.BaseSel
+                 )
+             elif "installed_from_binary_cache" in message:
+                 child_info.spec.package.installed_from_binary_cache = True
++            elif "warning" in message:
++                self.build_warnings.append(message["warning"])
+ 
+         return True
+ 
+diff --git a/lib/spack/spack/package_base.py b/lib/spack/spack/package_base.py
+index cfa8ef7..a2d1c1b 100644
+--- a/lib/spack/spack/package_base.py
++++ b/lib/spack/spack/package_base.py
+@@ -600,6 +600,10 @@ class PackageBase(WindowsRPath, PackageViewMixin, metaclass=PackageMeta):
+     #: By default do not run tests within package's install()
+     run_tests: bool = False
+ 
++    #: If True, failures of install-time tests are reported as warnings instead of
++    #: failing the installation (set by ``spack install --allow-test-failures``)
++    allow_test_failures: bool = False
++
+     #: Most packages are NOT extendable. Set to True if you want extensions.
+     extendable: bool = False
+ 
+diff --git a/lib/spack/spack/test/new_installer.py b/lib/spack/spack/test/new_installer.py
+index 6064d0c..fc060b2 100644
+--- a/lib/spack/spack/test/new_installer.py
++++ b/lib/spack/spack/test/new_installer.py
+@@ -756,3 +756,40 @@ def test_expand_build_deps_source_only_includes_nested_build_deps(temporary_stor
+     # nested_build_tool must also be added (BUILD dep of build_tool). This is the bug: without the
+     # fix, expand_build_deps only traverses LINK|RUN, so nested_build_tool is missing.
+     assert specs["nested_build_tool"].dag_hash() in added_hashes
++
++
++@pytest.mark.not_on_windows("POSIX pipes")
++@pytest.mark.parametrize("allow", [True, False])
++def test_ignored_test_failures_reach_parent(allow):
++    """A build process reports tolerated test failures to the parent, which collects them."""
++    from multiprocessing import Pipe
++    from types import SimpleNamespace
++    from unittest import mock
++
++    from spack.new_installer import send_ignored_test_failures
++    from spack.new_installer_posix import make_state_stream
++
++    pkg = mock.Mock(run_tests=True, allow_test_failures=allow)
++    pkg.spec.cformat.return_value = "fmt@12.2.0"
++    pkg.tester.test_failures = [(RuntimeError("boom"), "failed")]
++    pkg.tester.test_log_file = "/path/to/test-log.txt"
++
++    state_r, state_w = Pipe(duplex=False)
++    stream = make_state_stream(state_w)
++    send_ignored_test_failures(pkg, stream)
++    stream.flush()
++
++    installer = PackageInstaller.__new__(PackageInstaller)
++    installer.state_buffers = {}
++    installer.build_warnings = []
++    child = SimpleNamespace(state_r_conn=state_r, proc=SimpleNamespace(pid=1), spec=mock.Mock())
++    if allow:
++        installer._handle_child_state(child, mock.Mock())
++        assert len(installer.build_warnings) == 1
++        assert "fmt@12.2.0: 1 test failure(s) ignored" in installer.build_warnings[0]
++        assert "/path/to/test-log.txt" in installer.build_warnings[0]
++    else:
++        # nothing was written, so there is nothing to read
++        state_w.close()
++        installer._handle_child_state(child, mock.Mock())
++        assert installer.build_warnings == []
+diff --git a/lib/spack/spack/test/test_suite.py b/lib/spack/spack/test/test_suite.py
+index c876428..99fb5eb 100644
+--- a/lib/spack/spack/test/test_suite.py
++++ b/lib/spack/spack/test/test_suite.py
+@@ -2,14 +2,17 @@
+ #
+ # SPDX-License-Identifier: (Apache-2.0 OR MIT)
+ import collections
++import contextlib
+ import os
+ import pathlib
+ import sys
++from unittest import mock
+ 
+ import pytest
+ 
+ import spack.concretize
+ import spack.config
++import spack.error
+ import spack.install_test
+ import spack.spec
+ import spack.util.executable
+@@ -524,3 +527,73 @@ def test_packagetest_fails(mock_packages):
+     pkg = MyPackage(s)
+     with pytest.raises(ValueError, match="require a concrete package"):
+         spack.install_test.PackageTest(pkg)
++
++
++def _phase_tester(monkeypatch):
++    """A PackageTest with just enough state to run ``phase_tests``."""
++    tester = spack.install_test.PackageTest.__new__(spack.install_test.PackageTest)
++    tester.test_failures = []
++    logger = mock.Mock()
++    logger.force_echo.side_effect = contextlib.nullcontext
++    monkeypatch.setattr(
++        tester, "test_logger", lambda **kwargs: contextlib.nullcontext(logger), raising=False
++    )
++    tester.test_log_file = "/path/to/test-log.txt"
++    return tester
++
++
++def _phase_builder(callback, allow_test_failures):
++    builder = mock.Mock()
++    builder.pkg.allow_test_failures = allow_test_failures
++    builder.check = callback
++    return builder
++
++
++def _failing_check():
++    raise spack.util.executable.ProcessError("Command exited with status 2: make test")
++
++
++@pytest.mark.parametrize("phase", ["build", "install"])
++def test_phase_tests_failure_is_fatal_by_default(monkeypatch, phase):
++    """A test callback that raises aborts the installation unless failures are allowed."""
++    tester = _phase_tester(monkeypatch)
++    builder = _phase_builder(_failing_check, allow_test_failures=False)
++    with pytest.raises(spack.util.executable.ProcessError):
++        tester.phase_tests(builder, phase, ["check"])
++
++
++@pytest.mark.parametrize("phase", ["build", "install"])
++def test_phase_tests_failure_allowed(monkeypatch, capfd, phase):
++    """With allow_test_failures, a raising test callback becomes a warning."""
++    tester = _phase_tester(monkeypatch)
++    builder = _phase_builder(_failing_check, allow_test_failures=True)
++    tester.phase_tests(builder, phase, ["check"])
++    assert len(tester.test_failures) == 1
++    assert "make test" in str(tester.test_failures[0][0])
++    err = capfd.readouterr().err
++    assert f"Ignoring {phase}-time test failures" in err
++    assert "/path/to/test-log.txt" in err
++
++
++def test_phase_tests_collected_failures_allowed(monkeypatch):
++    """Failures recorded via add_failure do not raise when allow_test_failures is set."""
++    tester = _phase_tester(monkeypatch)
++    builder = _phase_builder(lambda: tester.add_failure(RuntimeError("boom"), "failed"), True)
++    tester.phase_tests(builder, "install", ["check"])
++    assert len(tester.test_failures) == 1
++
++    tester = _phase_tester(monkeypatch)
++    builder = _phase_builder(lambda: tester.add_failure(RuntimeError("boom"), "failed"), False)
++    with pytest.raises(spack.install_test.TestFailure):
++        tester.phase_tests(builder, "install", ["check"])
++
++
++def test_phase_tests_stop_phase_is_not_swallowed(monkeypatch):
++    tester = _phase_tester(monkeypatch)
++
++    def stop():
++        raise spack.error.StopPhase("stop")
++
++    builder = _phase_builder(stop, allow_test_failures=True)
++    with pytest.raises(spack.error.StopPhase):
++        tester.phase_tests(builder, "build", ["check"])
+diff --git a/share/spack/spack-completion.bash b/share/spack/spack-completion.bash
+index 2b0768b..51ed9c6 100644
+--- a/share/spack/spack-completion.bash
++++ b/share/spack/spack-completion.bash
+@@ -1367,7 +1367,7 @@ _spack_info() {
+ _spack_install() {
+     if $list_options
+     then
+-        SPACK_COMPREPLY="-h --help --only -u --until -p --concurrent-packages -j --jobs --overwrite --fail-fast --keep-prefix --keep-stage --dont-restage --use-cache --no-cache --cache-only --use-buildcache --include-build-deps --no-check-signature --show-log-on-error --source -n --no-checksum -v --verbose --fake --only-concrete --add --no-add --clean --dirty --test --log-format --log-file --help-cdash --cdash-upload-url --cdash-build --cdash-site --cdash-track --cdash-buildstamp -y --yes-to-all -f --force -U --fresh --reuse --fresh-roots --reuse-deps --deprecated"
++        SPACK_COMPREPLY="-h --help --only -u --until -p --concurrent-packages -j --jobs --overwrite --fail-fast --keep-prefix --keep-stage --dont-restage --use-cache --no-cache --cache-only --use-buildcache --include-build-deps --no-check-signature --show-log-on-error --source -n --no-checksum -v --verbose --fake --only-concrete --add --no-add --clean --dirty --test --allow-test-failures --log-format --log-file --help-cdash --cdash-upload-url --cdash-build --cdash-site --cdash-track --cdash-buildstamp -y --yes-to-all -f --force -U --fresh --reuse --fresh-roots --reuse-deps --deprecated"
+     else
+         _all_packages
+     fi
+diff --git a/share/spack/spack-completion.fish b/share/spack/spack-completion.fish
+index 3493121..01dba58 100644
+--- a/share/spack/spack-completion.fish
++++ b/share/spack/spack-completion.fish
+@@ -2132,7 +2132,7 @@ complete -c spack -n '__fish_spack_using_command info' -l virtuals -d 'output vi
+ complete -c spack -n '__fish_spack_using_command info' -l variants-by-name -f -a by_name
+ 
+ # spack install
+-set -g __fish_spack_optspecs_spack_install h/help only= u/until= p/concurrent-packages= j/jobs= overwrite fail-fast keep-prefix keep-stage dont-restage use-cache no-cache cache-only use-buildcache= include-build-deps no-check-signature show-log-on-error source n/no-checksum v/verbose fake only-concrete add no-add clean dirty test= log-format= log-file= help-cdash cdash-upload-url= cdash-build= cdash-site= cdash-track= cdash-buildstamp= y/yes-to-all f/force U/fresh reuse fresh-roots deprecated
++set -g __fish_spack_optspecs_spack_install h/help only= u/until= p/concurrent-packages= j/jobs= overwrite fail-fast keep-prefix keep-stage dont-restage use-cache no-cache cache-only use-buildcache= include-build-deps no-check-signature show-log-on-error source n/no-checksum v/verbose fake only-concrete add no-add clean dirty test= allow-test-failures log-format= log-file= help-cdash cdash-upload-url= cdash-build= cdash-site= cdash-track= cdash-buildstamp= y/yes-to-all f/force U/fresh reuse fresh-roots deprecated
+ complete -c spack -n '__fish_spack_using_command_pos_remainder 0 install' -f -k -a '(__fish_spack_specs)'
+ complete -c spack -n '__fish_spack_using_command install' -s h -l help -f -a help
+ complete -c spack -n '__fish_spack_using_command install' -s h -l help -d 'show this help message and exit'
+@@ -2188,6 +2188,8 @@ complete -c spack -n '__fish_spack_using_command install' -l dirty -f -a dirty
+ complete -c spack -n '__fish_spack_using_command install' -l dirty -d 'preserve user environment in spack'"'"'s build environment (danger!)'
+ complete -c spack -n '__fish_spack_using_command install' -l test -r -f -a 'root all'
+ complete -c spack -n '__fish_spack_using_command install' -l test -r -d 'run tests on only root packages or all packages'
++complete -c spack -n '__fish_spack_using_command install' -l allow-test-failures -f -a allow_test_failures
++complete -c spack -n '__fish_spack_using_command install' -l allow-test-failures -d 'with --test, report failing install-time tests as warnings instead of failing the installation'
+ complete -c spack -n '__fish_spack_using_command install' -l log-format -r -f -a 'junit cdash'
+ complete -c spack -n '__fish_spack_using_command install' -l log-format -r -d 'format to be used for log files'
+ complete -c spack -n '__fish_spack_using_command install' -l log-file -r -f -a log_file
