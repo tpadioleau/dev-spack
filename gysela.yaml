@@ -29,7 +29,6 @@ spack:
         - '~rocm'
         - '~openmp'
         - '~mpi'
-        - '~fortran'
     c:
       require: 'gcc@16'
     cxx:
