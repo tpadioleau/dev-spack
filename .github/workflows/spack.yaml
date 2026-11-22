@@ -46,6 +46,8 @@ jobs:
           spack --env . config add config:install_tree:padded_length:128
           spack --env . repo update
           spack --env . mirror set --autopush local-buildcache
+          spack --env . config add "config:extensions:[$PWD/spack-cherry-pick]"
+          spack --env . cherry-pick add --file cherries.yaml
       - name: Install
         shell: spack-bash {0}
         env:

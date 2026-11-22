@@ -1,0 +1,8 @@
+# Example input for `spack cherry-pick add -f cherries.yaml`
+cherries:
+- package: cmake
+  commit: 8ed34337          # abbreviated sha (spack-packages, 2025-08-31)
+- package: zlib
+  commit: develop           # branch or tag also accepted
+  # git: https://github.com/spack/spack-packages.git   # optional, this is the default
+  # path: repos/spack_repo/builtin                      # optional, auto-detected

@@ -45,9 +45,6 @@ spack:
     patches:
       git: https://github.com/gyselax/spack.git
       branch: develop
-    tpadioleau-builtin:
-      git: https://github.com/tpadioleau/spack-packages.git
-      branch: test-all-packages
     builtin:
       branch: develop
   specs:

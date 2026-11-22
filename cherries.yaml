@@ -1,0 +1,43 @@
+cherries:
+  - package: kokkos
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: kokkos-kernels
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: kokkos-tools
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: mdspan
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: paraconf
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: pdi
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: pdiplugin-decl-hdf5
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: pdiplugin-decl-netcdf
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: pdiplugin-mpi
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: pdiplugin-pycall
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: pdiplugin-serialize
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: pdiplugin-set-value
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: pdiplugin-trace
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
+  - package: pdiplugin-user-code
+    commit: 019c2ba795c5dfce2751dbca7b9d95ac0bd8beb2
+    git: https://github.com/tpadioleau/spack-packages.git
