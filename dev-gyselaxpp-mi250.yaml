@@ -5,17 +5,9 @@ spack:
     unify: true
     targets:
       host_compatible: false
-  config:
-    sandbox:
-      enable: true
-      allow_network: true
-      allow_read:
-        - /
-      allow_write:
-        - /home/runner
   mirrors:
     local-buildcache:
-      url: oci://ghcr.io/tpadioleau/dev-spack-ubuntu-26.04
+      url: oci://ghcr.io/tpadioleau/experimental-ubuntu-24.04
       binary: true
       source: false
       signed: false
@@ -33,11 +25,11 @@ spack:
         - '~mpi'
         - '~fortran'
     c:
-      require: 'gcc@15.2'
+      require: 'gcc'
     cxx:
-      require: 'gcc@15.2'
+      require: 'gcc'
     fortran:
-      require: 'gcc@15.2'
+      require: 'gcc'
 
     ginkgo:
       require:
