@@ -45,6 +45,9 @@ jobs:
           spack --env . buildcache list
       - name: Install
         shell: spack-bash {0}
+        env:
+          GITHUB_USER: ${{github.actor}}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
           spack --env . concretize
           mkdir tmp_spack
