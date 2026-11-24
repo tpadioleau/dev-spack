@@ -69,17 +69,9 @@ spack:
       require:
         - 'target=x86_64'
         - 'fabrics=cxi'
-    llvm-amdgpu:
-      require:
-        - spec: 'cxxflags="-include cstdint"'
-          when: '%gcc@15:'
     mpi:
       require:
         - 'openmpi fabrics=ofi,cma schedulers=slurm +rocm amdgpu_target=gfx90a'
-    py-jaxlib:
-      require:
-        - '%cxx=llvm@18'
-        - '+rocm amdgpu_target=gfx90a'
 
     hdf5:
       require:
