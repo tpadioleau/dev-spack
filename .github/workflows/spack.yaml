@@ -20,6 +20,7 @@ jobs:
       matrix:
         env:
           - dev-gyselaxpp-mi250.yaml
+          - dev-gyselaxpp-h100.yaml
         os: [ubuntu-24.04]
     runs-on: ${{matrix.os}}
     permissions:
