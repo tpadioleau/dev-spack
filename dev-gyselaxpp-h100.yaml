@@ -25,11 +25,11 @@ spack:
         - '~mpi'
         - '~fortran'
     c:
-      require: 'gcc'
+      require: 'gcc@13'
     cxx:
-      require: 'gcc'
+      require: 'gcc@13'
     fortran:
-      require: 'gcc'
+      require: 'gcc@13'
 
     ginkgo:
       require:
