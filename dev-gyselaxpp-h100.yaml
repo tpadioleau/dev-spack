@@ -7,7 +7,7 @@ spack:
       host_compatible: false
   mirrors:
     local-buildcache:
-      url: oci://ghcr.io/tpadioleau/experimental-ubuntu-26.04
+      url: oci://ghcr.io/tpadioleau/experimental-ubuntu-24.04
       binary: true
       source: false
       signed: false
