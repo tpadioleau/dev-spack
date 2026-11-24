@@ -70,6 +70,10 @@ spack:
     lapack:
       require:
         - 'openblas'
+    llvm-amdgpu:
+      require:
+        - spec: 'cxxflags="-include cstdint"'
+          when: '%gcc@15:'
     mpi:
       require:
         - 'openmpi schedulers=slurm +rocm amdgpu_target=gfx90a'
