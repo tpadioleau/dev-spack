@@ -35,6 +35,9 @@ spack:
       require:
         - 'target=zen3'
         - '~openmp +rocm amdgpu_target=gfx90a'
+    hip:
+      require:
+        - '@6.4:'
     kokkos:
       require:
         - 'target=zen3'
