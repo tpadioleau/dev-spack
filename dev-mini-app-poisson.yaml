@@ -53,7 +53,7 @@ spack:
     builtin:
       tag: v2026.10.1
   specs:
-    - 'gcc@15.2'
+    - 'cxx'
     - 'cmake@4.4'
     - 'gyselalibxx@0.8'
     - 'ninja@1.13'

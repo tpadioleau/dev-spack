@@ -38,7 +38,7 @@ spack:
     builtin:
       tag: v2026.10.1
   specs:
-    - 'gcc@15.2'
+    - 'cxx'
     - 'benchmark@1.9 ~performance_counters'
     - 'cmake@4.4'
     - 'googletest@1.18 +gmock'
