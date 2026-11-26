@@ -45,9 +45,10 @@ spack:
   repos:
     patches:
       git: https://github.com/gyselax/spack.git
-      branch: releases/v2026.10
+      commit: 7f19e5e7b2f68939b3eefdc14b9472e6e3df374a
+      destination: repos/gysela-patches
     builtin:
-      branch: releases/v2026.10
+      tag: v2026.10.1
   specs:
     - 'gcc@15.2'
     - 'cmake@4.4'
