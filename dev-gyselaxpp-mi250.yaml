@@ -1,0 +1,130 @@
+---
+spack:
+  concretizer:
+    reuse: false
+    unify: true
+    targets:
+      host_compatible: false
+  mirrors:
+    local-buildcache:
+      url: oci://ghcr.io/tpadioleau/experimental-ubuntu-24.04
+      binary: true
+      source: false
+      signed: false
+      access_pair:
+        id_variable: GITHUB_USER
+        secret_variable: GITHUB_TOKEN
+  packages:
+    all:
+      require:
+        - 'target=x86_64'
+      prefer:
+        - '~cuda'
+        - '+rocm amdgpu_target=gfx90a'
+        - '~openmp'
+        - '~mpi'
+        - '~fortran'
+    c:
+      require: 'gcc@13'
+    cxx:
+      require: 'gcc@13'
+    fortran:
+      require: 'gcc@13'
+
+    ginkgo:
+      require:
+        - 'target=zen3'
+        - '~openmp +rocm amdgpu_target=gfx90a'
+    hip:
+      require:
+        - '@6.4:'
+    kokkos:
+      require:
+        - 'target=zen3'
+        - '~openmp +rocm amdgpu_target=gfx90a'
+    kokkos-fft:
+      require:
+        - 'target=zen3'
+        - 'host_backend=fftw-serial'
+    kokkos-kernels:
+      require:
+        - 'target=zen3'
+        - '~shared'
+    koliop:
+      require:
+        - 'target=zen3'
+    ddc:
+      require:
+        - 'target=zen3'
+    gmgpolar:
+      require:
+        - 'target=zen3'
+    kokkos-tools:
+      require:
+        - 'target=zen3'
+    lapack:
+      require:
+        - 'openblas'
+    libfabric:
+      require:
+        - 'target=x86_64'
+        - 'fabrics=cxi'
+    mpi:
+      require:
+        - 'openmpi fabrics=ofi,cma schedulers=slurm +rocm amdgpu_target=gfx90a'
+
+    hdf5:
+      require:
+        - '+subfiling'
+  repos:
+    patches:
+      git: https://github.com/gyselax/spack.git
+      commit: 7f19e5e7b2f68939b3eefdc14b9472e6e3df374a
+      destination: repos/gysela-patches
+    builtin:
+      tag: v2026.10.1
+      destination: $spack/var/spack/repos/builtin-v2026.10.1
+  specs:
+    - cxx
+    - cmake@3.31
+    - ddc@0.17 +fft +pdi +splines
+    - ginkgo@1.11
+    - gmgpolar@2.4
+    - googletest@1.17 +gmock
+    - kokkos@5.1
+    - kokkos-kernels@5.1
+    - koliop@1.1
+    - lapack
+    - mpi
+    - ninja@1.13
+    - paraconf@1.0
+    - pdi@1.11
+    - pdiplugin-decl-hdf5@1.11 +mpi
+    - pdiplugin-decl-netcdf@1.11 +mpi
+    - pdiplugin-mpi@1.11
+    - pdiplugin-pycall@1.11
+    - pdiplugin-set-value@1.11
+    - pdiplugin-trace@1.11
+    - python@3.14
+
+    - py-dask@2026.3 +distributed
+    - py-gysmc@git.f62d25275b7695c78f95d7aca51cbe679a1ef8b1=main
+    - py-h5py@3.16
+    - py-imageio@2.37
+    - py-matplotlib@3.11
+    - py-mpi4py@4.1
+    - py-netcdf4@1.7 +mpi
+    - py-numexpr@2.14
+    - py-numpy@2.4
+    - py-psutil@7.2
+    - py-pyyaml@6.0
+    - py-scipy@1.17
+    - py-sympy@1.14
+    - py-xarray@2026.4 +io +parallel
+
+    - kokkos-tools@5.2
+  view:
+    default:
+      projections:
+        all: "{name}-{version}-{hash}"
+      root: .spack-env/view
