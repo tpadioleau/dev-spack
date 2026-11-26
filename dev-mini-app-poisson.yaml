@@ -57,7 +57,7 @@ spack:
     - 'cmake@4.4'
     - 'gyselalibxx@0.8'
     - 'ninja@1.13'
-    - 'py-scimba@1.3'
+    - 'py-scimba@1.4'
   view:
     default:
       projections:
